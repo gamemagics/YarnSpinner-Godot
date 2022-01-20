@@ -14,7 +14,9 @@ script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-viewNames = PoolStringArray( "DialogueRunner/LineView" )
+viewNames = PoolStringArray( "LineView" )
+startNode = "HelloWorld"
+startAutomatically = false
 
 [node name="LineView" type="Control" parent="DialogueRunner"]
 margin_right = 1024.0

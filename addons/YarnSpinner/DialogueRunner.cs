@@ -28,7 +28,7 @@ public class DialogueRunner : Control {
     [Export] public string[] viewNames;
     public DialogueViewBase[] dialogueViews;
 
-    public string startNode = Yarn.Dialogue.DefaultStartNodeName;
+    [Export] public string startNode = Yarn.Dialogue.DefaultStartNodeName;
 
     [Export] public bool startAutomatically = true;
 
@@ -417,7 +417,12 @@ public class DialogueRunner : Control {
             dialogueView.onUserWantsLineContinuation = continueAction;
         }
 
+        yarnProject = GetNode<YarnProject>("YarnProject");
         if (yarnProject != null) {
+            if (verboseLogging) { 
+                GD.Print("Project Loaded.");
+            }
+
             if (Dialogue.IsActive) {
                 GD.PrintErr($"DialogueRunner wanted to load a Yarn Project in its Start method, but the Dialogue was already running one. The Dialogue Runner may not behave as you expect.");
             }
