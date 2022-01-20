@@ -49,7 +49,7 @@ public abstract class DialogueViewBase : Control {
         coroutines.Clear();
     }
 
-    private IEnumerator StartCoroutine(IEnumerator enumerator) {
+    protected IEnumerator StartCoroutine(IEnumerator enumerator) {
         if (enumerator.MoveNext()) {
             coroutines.Add(enumerator);
         }
