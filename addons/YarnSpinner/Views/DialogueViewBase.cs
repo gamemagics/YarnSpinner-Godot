@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class DialogueViewBase : RichTextLabel {
+public abstract class DialogueViewBase : Control {
     internal System.Action onUserWantsLineContinuation;
 
     private List<IEnumerator> coroutines = new List<IEnumerator>();
@@ -60,7 +60,15 @@ public abstract class DialogueViewBase : RichTextLabel {
     public override void _Process(float delta) {
         List<IEnumerator> dead = new List<IEnumerator>();
         foreach (var c in coroutines) {
-            if (!c.MoveNext()) {
+            var sec = c.Current as WaitForSeconds;
+            if (sec != null) {
+                if (sec.Tick(delta)) {
+                    if (!c.MoveNext()) {
+                        dead.Add(c);
+                    }
+                }
+            }
+            else if (!c.MoveNext()) {
                 dead.Add(c);
             }
         }

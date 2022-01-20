@@ -116,7 +116,15 @@ public class DialogueRunner : Control {
     public override void _Process(float delta) {
         List<IEnumerator> dead = new List<IEnumerator>();
         foreach (var c in coroutines) {
-            if (!c.MoveNext()) {
+            var sec = c.Current as WaitForSeconds;
+            if (sec != null) {
+                if (sec.Tick(delta)) {
+                    if (!c.MoveNext()) {
+                        dead.Add(c);
+                    }
+                }
+            }
+            else if (!c.MoveNext()) {
                 dead.Add(c);
             }
         }
