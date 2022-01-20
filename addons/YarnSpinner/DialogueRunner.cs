@@ -385,7 +385,7 @@ public class DialogueRunner : Control {
             // TextLineProvider and make it use that.
 
             // Create the temporary line provider and the line database
-            var lineProvider = new TextLineProvider();
+            lineProvider = new TextLineProvider();
             AddChild(lineProvider);
 
             // Let the user know what we're doing.
