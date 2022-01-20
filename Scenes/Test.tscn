@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/YarnSpinner/Views/LineView.cs" type="Script" id=1]
 [ext_resource path="res://addons/YarnSpinner/DialogueRunner.cs" type="Script" id=2]
 [ext_resource path="res://addons/YarnSpinner/YarnProject.cs" type="Script" id=3]
+[ext_resource path="res://Scripts/TestDeclaration.cs" type="Script" id=4]
 
 [node name="Test" type="Node2D"]
 
@@ -25,3 +26,8 @@ __meta__ = {
 
 [node name="YarnProject" type="Node" parent="DialogueRunner"]
 script = ExtResource( 3 )
+sourceScripts = PoolStringArray(  )
+declarationPath = "DialogueRunner/YarnProject/Declaration"
+
+[node name="Declaration" type="Node" parent="DialogueRunner/YarnProject"]
+script = ExtResource( 4 )
