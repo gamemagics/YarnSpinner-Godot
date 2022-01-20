@@ -26,8 +26,8 @@ __meta__ = {
 
 [node name="YarnProject" type="Node" parent="DialogueRunner"]
 script = ExtResource( 3 )
-sourceScripts = PoolStringArray(  )
-declarationPath = "DialogueRunner/YarnProject/Declaration"
+sourceScripts = PoolStringArray( "res://Dialogue/Test.tres" )
+declarationPath = "Declaration"
 
 [node name="Declaration" type="Node" parent="DialogueRunner/YarnProject"]
 script = ExtResource( 4 )

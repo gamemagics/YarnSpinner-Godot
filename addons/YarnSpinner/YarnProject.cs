@@ -1,12 +1,10 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 using Yarn.Compiler;
 using System.Linq;
-using System.IO;
 
 public class YarnProject : Node {
-    public byte[] compiledYarnProgram;
+    public Yarn.Program program;
     public Localization baseLocalization;
     public List<string> searchAssembliesForActions = new List<string>();
     public List<Localization> localizations = new List<Localization>();
@@ -15,14 +13,23 @@ public class YarnProject : Node {
     [Export] private string declarationPath = null;
 
     public override void _Ready() {
-        var job = CompilationJob.CreateFromFiles(sourceScripts);
-        if (declarationPath != null) {
-            var dnode = GetNode<IDeclaration>(declarationPath);
-            job.VariableDeclarations = dnode.GetDeclarations();
+        string content = "";
+        foreach (var s in sourceScripts) {
+            var fp = new File();
+            fp.Open(s, File.ModeFlags.Read);
+            content += fp.GetAsText();
         }
 
-        CompilationResult compilationResult;
-        compilationResult = Compiler.Compile(job);
+        var job = CompilationJob.CreateFromString(sourceScripts[0], content);
+        if (declarationPath != null) {
+            var dnode = GetNode<IDeclaration>(declarationPath);
+            var ds = dnode.GetDeclarations();
+            if (ds.Count > 0) {
+                job.VariableDeclarations = dnode.GetDeclarations();
+            }
+        }
+
+        CompilationResult compilationResult = Compiler.Compile(job);
         var errors = compilationResult.Diagnostics.Where(d => d.Severity == Diagnostic.DiagnosticSeverity.Error);
 
         if (errors.Count() > 0) {
@@ -37,14 +44,7 @@ public class YarnProject : Node {
             return;
         }
 
-        using (var memoryStream = new MemoryStream())
-        using (var outputStream = new Google.Protobuf.CodedOutputStream(memoryStream)) {
-            // Serialize the compiled program to memory
-            compilationResult.Program.WriteTo(outputStream);
-            outputStream.Flush();
-
-            compiledYarnProgram = memoryStream.ToArray();
-        }
+        program = compilationResult.Program;
     }
 
     public Localization GetLocalization(string localeCode) {
@@ -70,6 +70,6 @@ public class YarnProject : Node {
     /// this object.
     /// </summary>
     public Yarn.Program GetProgram() {
-        return Yarn.Program.Parser.ParseFrom(compiledYarnProgram);
+        return program;
     }
 }

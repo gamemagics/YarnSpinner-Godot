@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Godot.NET.Sdk/3.3.0">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net4.7.2</TargetFramework>
     <RootNamespace>YarnSpinnerGodot</RootNamespace>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
