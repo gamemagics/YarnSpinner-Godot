@@ -25,11 +25,12 @@ public class DialogueRunner : Control {
         }
     }
 
+    [Export] public string[] viewNames;
     public DialogueViewBase[] dialogueViews;
 
     public string startNode = Yarn.Dialogue.DefaultStartNodeName;
 
-    public bool startAutomatically = true;
+    [Export] public bool startAutomatically = true;
 
     [Export] public bool automaticallyContinueLines;
 
@@ -393,8 +394,14 @@ public class DialogueRunner : Control {
             }
         }
 
+        dialogueViews = new DialogueViewBase[viewNames.Length];
+        for (int i = 0; i < viewNames.Length; ++i) {
+            dialogueViews[i] = GetNode<DialogueViewBase>(viewNames[i]);
+        }
+
         if (dialogueViews.Length == 0) {
             GD.PrintErr($"Dialogue Runner doesn't have any dialogue views set up. No lines or options will be visible.");
+            return;
         }
 
         // Give each dialogue view the continuation action, which

@@ -1,6 +1,27 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://Scripts/Test.cs" type="Script" id=1]
+[ext_resource path="res://addons/YarnSpinner/Views/LineView.cs" type="Script" id=1]
+[ext_resource path="res://addons/YarnSpinner/DialogueRunner.cs" type="Script" id=2]
+[ext_resource path="res://addons/YarnSpinner/YarnProject.cs" type="Script" id=3]
 
 [node name="Test" type="Node2D"]
+
+[node name="DialogueRunner" type="Control" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+viewNames = PoolStringArray( "DialogueRunner/LineView" )
+
+[node name="LineView" type="Control" parent="DialogueRunner"]
+margin_right = 1024.0
+margin_bottom = 600.0
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="YarnProject" type="Node" parent="DialogueRunner"]
+script = ExtResource( 3 )
