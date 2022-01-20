@@ -1,6 +1,21 @@
-<Project Sdk="Godot.NET.Sdk/3.3.0">
+﻿<Project Sdk="Godot.NET.Sdk/3.3.0">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>YarnSpinnerGodot</RootNamespace>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="addons\YarnSpinner\YarnSpinner\YarnSpinner.Compiler\**" />
+    <Compile Remove="addons\YarnSpinner\YarnSpinner\YarnSpinner.Tests\**" />
+    <EmbeddedResource Remove="addons\YarnSpinner\YarnSpinner\YarnSpinner.Compiler\**" />
+    <EmbeddedResource Remove="addons\YarnSpinner\YarnSpinner\YarnSpinner.Tests\**" />
+  </ItemGroup>
+  <ItemGroup>
+	  <Reference Include="CSVHelper">
+		  <HintPath>./addons/YarnSpinner/DLLs/CsvHelper.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Google.Protobuf">
+		  <HintPath>./addons/YarnSpinner/DLLs/Google.Protobuf.dll</HintPath>
+	  </Reference>
+  </ItemGroup>
 </Project>
