@@ -3,20 +3,20 @@ tags:
 colorID: 0
 ---
 System: Hello World!
--> I'm back.
-    <<jump Old>>
--> I'm new here.
-    <<jump New>>
-===
-title: New
-tags:
-colorID: 0
----
-System: Nice to Meet You!
-===
-title: Old
-tags:
-colorID: 0
----
-System: Welcome Back!
+//-> I'm back.
+//    <<jump Old>>
+//-> I'm new here.
+//    <<jump New>>
+//===
+//title: New
+//tags:
+//colorID: 0
+//---
+//System: Nice to Meet You!
+//===
+//title: Old
+//tags:
+//colorID: 0
+//---
+//System: Welcome Back!
 ===

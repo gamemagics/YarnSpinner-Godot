@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
+[ext_resource path="res://addons/YarnSpinner/Views/RPGView.cs" type="Script" id=1]
 [ext_resource path="res://addons/YarnSpinner/DialogueRunner.cs" type="Script" id=2]
 [ext_resource path="res://addons/YarnSpinner/YarnProject.cs" type="Script" id=3]
 [ext_resource path="res://Scripts/TestDeclaration.cs" type="Script" id=4]
@@ -19,8 +20,26 @@ script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-viewNames = PoolStringArray(  )
+viewNames = PoolStringArray( "RPGView" )
 startNode = "HelloWorld"
+
+[node name="RPGView" type="Control" parent="DialogueRunner"]
+margin_right = 1024.0
+margin_bottom = 600.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+textPath = "RichTextLabel"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="DialogueRunner/RPGView"]
+margin_left = 259.0
+margin_top = 411.0
+margin_right = 758.0
+margin_bottom = 601.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="YarnProject" type="Node" parent="DialogueRunner"]
 script = ExtResource( 3 )

@@ -11,17 +11,15 @@ public class YarnSpinnerPlugin : EditorPlugin {
         AddComponent("res://addons/YarnSpinner/Commands/DefaultActions.cs", "DefaultActions", "Node");
         AddComponent("res://addons/YarnSpinner/LineProviders/TextLineProvider.cs", "TextLineProvider", "Node");
         AddComponent("res://addons/YarnSpinner/LanguageToSourceAsset.cs", "LanguageToSourceAsset", "Resource");
+        AddComponent("res://addons/YarnSpinner/Views/RPGView.cs", "RPGView", "Control");
     }
     public override void _ExitTree() {
         RemoveCustomType("DialogueRunner");
         RemoveCustomType("YarnProject");
         RemoveCustomType("DefaultActions");
         RemoveCustomType("TextLineProvider");
-        RemoveCustomType("CharacterColorView");
-        RemoveCustomType("DialogueCharacterNameView");
-        RemoveCustomType("LineView");
-        RemoveCustomType("OptionsListView");
         RemoveCustomType("LanguageToSourceAsset");
+        RemoveCustomType("RPGView");
     }
     private void AddComponent(string scriptName, string name, string parent) {
         var script = GD.Load<Script>(scriptName);
