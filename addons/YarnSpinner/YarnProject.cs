@@ -173,6 +173,16 @@ public class YarnProject : Resource {
                     continue;
                 }
             }
+
+            var newLocalization = new Localization();
+            newLocalization.LocaleCode = lang.LanguageID;
+            newLocalization.AddLocalizedStrings(stringTable);
+            localizations.Add(newLocalization);
+
+            if (lang.LanguageID == defaultLanguage) {
+                // If this is our default language, set it as such
+                baseLocalization = newLocalization;
+            }
         }
     }
 
