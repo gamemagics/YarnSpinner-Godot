@@ -102,6 +102,7 @@ public class YarnProject : Resource {
             var fp = new Godot.File();
             fp.Open(s, Godot.File.ModeFlags.Read);
             content += fp.GetAsText();
+            fp.Close();
         }
 
         var job = CompilationJob.CreateFromString(sourceScripts[0], content);
@@ -182,14 +183,42 @@ public class YarnProject : Resource {
                     if (lang.StringFile == null) {
                         // We can't create this localization because we
                         // don't have any data for it.
+#if TOOLS
+                        var temp = compilationResult.StringTable.Select(x => new StringTableEntry {
+                            ID = x.Key,
+                            Language = defaultLanguage,
+                            Text = x.Value.text,
+                            File = x.Value.fileName,
+                            Node = x.Value.nodeName,
+                            LineNumber = x.Value.lineNumber.ToString(),
+                            Lock = GetHashString(x.Value.text, 8),
+                        });
 
-                        // TODO: Generate One
+                        var fp = new Godot.File();
+                        fp.Open(sourceScripts[0], Godot.File.ModeFlags.Read);
+                        string target = fp.GetPathAbsolute();
+                        fp.Close();
+                        target = target.ReplaceN(".yarn.tres", "(" + lang.LanguageID + ").csv.tres");
 
-                        GD.PushWarning($"Not creating a localization for {lang.LanguageID} in the Yarn Project {projectName} because a text asset containing the strings wasn't found. Add a .csv file containing the translated lines to the Yarn Project's inspector.");
-                        continue;
+                        GD.Print("Generate " + target);
+                        using (var writer = new StreamWriter(target)) {
+                            writer.WriteLine("language,id,text,file,node,lineNumber,lock,comment");
+                            foreach (var item in temp) {
+                                writer.WriteLine($"{lang.LanguageID},{item.ID},{item.Text},{item.File},{item.Node},{item.LineNumber},{item.Lock},");
+                            }
+
+                            lang.StringFile = target;
+                        }   
+#else
+                    GD.PushWarning($"Not creating a localization for {lang.LanguageID} in the Yarn Project {projectName} because a text asset containing the strings wasn't found. Add a .csv file containing the translated lines to the Yarn Project's inspector.");
+                    continue;
+#endif
                     }
 
-                    stringTable = StringTableEntry.ParseFromCSV(lang.StringFile);
+                    var reader = new Godot.File();
+                    reader.Open(lang.StringFile, Godot.File.ModeFlags.Read);
+                    string source = reader.GetAsText();
+                    stringTable = StringTableEntry.ParseFromCSV(source);
                 }
                 catch (System.ArgumentException e) {
                     GD.PushWarning($"Not creating a localization for {lang.LanguageID} in the Yarn Project {projectName} because an error was encountered during text parsing: {e}");

@@ -119,6 +119,7 @@ public struct StringTableEntry {
                 var records = new List<StringTableEntry>();
                 csv.Read();
                 csv.ReadHeader();
+                Godot.GD.Print("rua");
                 while (csv.Read()) {
                     // Fetch values; if they can't be found, they'll be
                     // defaults.

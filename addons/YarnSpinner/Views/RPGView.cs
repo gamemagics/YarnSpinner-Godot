@@ -28,7 +28,6 @@ public class RPGView : DialogueViewBase {
     }
 
     public static IEnumerator Wait(float duration) {
-        GD.Print("wait...");
         yield return new WaitForSeconds(duration);
     }
 

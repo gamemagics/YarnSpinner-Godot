@@ -62,6 +62,7 @@ public class Localization {
 
     public void AddLocalizedStrings(IEnumerable<StringTableEntry> stringTableEntries) {
         foreach (var entry in stringTableEntries) {
+            GD.Print("add " + entry.ID + ": " + entry.Text);
             AddLocalizedString(entry.ID, entry.Text);
         }
     }
