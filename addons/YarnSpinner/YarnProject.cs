@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Yarn.Compiler;
 using System.Linq;
 using System.IO;
+using System.Text;
+using System.Security.Cryptography;
 
 [Tool]
 public class YarnProject : Resource {
@@ -12,19 +14,21 @@ public class YarnProject : Resource {
     public List<Localization> localizations = new List<Localization>();
 
     private string projectName = null;
-    private string[] sourceScripts;
+    private string[] sourceScripts = null;
     private string declarationPath = null;
-    private LanguageToSourceAsset[] languages;
+    private LanguageToSourceAsset[] languages = null;
+
+    private string defaultLanguage = null;
+
+    public YarnProject() {
+
+    }
 
     [Export]
     public string ProjectName {
         set {
-            string temp = projectName;
             projectName = value;
-#if TOOLS
             Compile();
-            Save(temp);
-#endif
         }
         get { return projectName; }
     }
@@ -33,17 +37,54 @@ public class YarnProject : Resource {
     public string[] SourceScripts {
         set {
             sourceScripts = value;
-#if TOOLS
             Compile();
-            Save();
-#endif
         }
         get { return sourceScripts; }
     }
 
-#if TOOLS
+    [Export]
+    public LanguageToSourceAsset[] Languages {
+        set {
+            languages = value;
+            Compile();
+        }
+        get { return languages; }
+    }
+
+    [Export]
+    public string DefaultLanguage {
+        set {
+            defaultLanguage = value;
+            Compile();
+        }
+        get { return defaultLanguage; }
+    }
+
+    private static byte[] GetHash(string inputString) {
+        using (HashAlgorithm algorithm = SHA256.Create()) {
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+        }
+    }
+
+    internal static string GetHashString(string inputString, int limitCharacters = -1) {
+        var sb = new StringBuilder();
+        foreach (byte b in GetHash(inputString)) {
+            sb.Append(b.ToString("x2"));
+        }
+
+        if (limitCharacters == -1) {
+            // Return the entire string
+            return sb.ToString();
+        }
+        else {
+            // Return a substring (or the entire string, if
+            // limitCharacters is longer than the string)
+            return sb.ToString(0, Mathf.Min(sb.Length, limitCharacters));
+        }
+    }
+
     private void Compile() {
-        if (sourceScripts == null || sourceScripts.Length == 0) {
+        if (sourceScripts == null || sourceScripts.Length == 0 || languages == null || defaultLanguage == null) {
             return;
         }
 
@@ -86,26 +127,54 @@ public class YarnProject : Resource {
 
             compiledYarnProgram = memoryStream.ToArray();
         }
-    }
 
-    private void Save(string prevName = null) {
-        GD.Print("Save to " + projectName);
+        foreach (var lang in languages) {
+            if (lang.LanguageID.Empty()) {
+                GD.PrintErr($"Not creating a localization for {projectName} because the language ID wasn't provided. Add the language ID to the localization in the Yarn Project's inspector.");
+                continue;
+            }
 
-        ResourceSaver.Save("res://Dialogues/" + projectName, this);
-        ResourcePath = "res://Dialogues/" + projectName;
+            IEnumerable<StringTableEntry> stringTable;
 
-        if (prevName != null) {
-            GD.Print("Remove " + prevName);
-            var fp = new Godot.File();
-            var err = fp.Open("res://Dialogues/" + prevName, Godot.File.ModeFlags.Read);
-            if (err == Error.Ok) {
-                string path = fp.GetPathAbsolute();
-                fp.Close();
-                System.IO.File.Delete(path);
+            // Where do we get our strings from? If it's the default
+            // language, we'll pull it from the scripts. If it's from
+            // any other source, we'll pull it from the CSVs.
+            if (lang.LanguageID == defaultLanguage) {
+                // We'll use the program-supplied string table.
+                stringTable = compilationResult.StringTable.Select(x => new StringTableEntry {
+                    ID = x.Key,
+                    Language = defaultLanguage,
+                    Text = x.Value.text,
+                    File = x.Value.fileName,
+                    Node = x.Value.nodeName,
+                    LineNumber = x.Value.lineNumber.ToString(),
+                    Lock = GetHashString(x.Value.text, 8),
+                });
+
+                // We don't need to add a default localization.
+                //shouldAddDefaultLocalization = false;
+            }
+            else {
+                try {
+                    if (lang.StringFile == null) {
+                        // We can't create this localization because we
+                        // don't have any data for it.
+
+                        // TODO: Generate One
+
+                        GD.PushWarning($"Not creating a localization for {lang.LanguageID} in the Yarn Project {projectName} because a text asset containing the strings wasn't found. Add a .csv file containing the translated lines to the Yarn Project's inspector.");
+                        continue;
+                    }
+
+                    stringTable = StringTableEntry.ParseFromCSV(lang.StringFile);
+                }
+                catch (System.ArgumentException e) {
+                    GD.PushWarning($"Not creating a localization for {lang.LanguageID} in the Yarn Project {projectName} because an error was encountered during text parsing: {e}");
+                    continue;
+                }
             }
         }
     }
-#endif
 
     public Localization GetLocalization(string localeCode) {
 
