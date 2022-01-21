@@ -7,18 +7,13 @@ using System;
 public class YarnSpinnerPlugin : EditorPlugin {
     public override void _EnterTree() {
         AddComponent("res://addons/YarnSpinner/DialogueRunner.cs", "DialogueRunner", "Control");
-        AddComponent("res://addons/YarnSpinner/Localization.cs", "Localization", "Node");
         AddComponent("res://addons/YarnSpinner/YarnProject.cs", "YarnProject", "Node");
         AddComponent("res://addons/YarnSpinner/Commands/DefaultActions.cs", "DefaultActions", "Node");
         AddComponent("res://addons/YarnSpinner/LineProviders/TextLineProvider.cs", "TextLineProvider", "Node");
-        AddComponent("res://addons/YarnSpinner/Views/CharacterColorView.cs", "CharacterColorView", "Control");
-        AddComponent("res://addons/YarnSpinner/Views/DialogueCharacterNameView.cs", "DialogueCharacterNameView", "Control");
-        AddComponent("res://addons/YarnSpinner/Views/LineView.cs", "LineView", "Control");
-        AddComponent("res://addons/YarnSpinner/Views/OptionsListView.cs", "OptionsListView", "Control");
+        AddComponent("res://addons/YarnSpinner/LanguageToSourceAsset.cs", "LanguageToSourceAsset", "Resource");
     }
     public override void _ExitTree() {
         RemoveCustomType("DialogueRunner");
-        RemoveCustomType("Localization");
         RemoveCustomType("YarnProject");
         RemoveCustomType("DefaultActions");
         RemoveCustomType("TextLineProvider");
@@ -26,6 +21,7 @@ public class YarnSpinnerPlugin : EditorPlugin {
         RemoveCustomType("DialogueCharacterNameView");
         RemoveCustomType("LineView");
         RemoveCustomType("OptionsListView");
+        RemoveCustomType("LanguageToSourceAsset");
     }
     private void AddComponent(string scriptName, string name, string parent) {
         var script = GD.Load<Script>(scriptName);

@@ -1,9 +1,8 @@
 using Godot;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
-public class DefaultActions : Node {
+public class DefaultActions {
     [YarnCommand("wait")]
     public static IEnumerator Wait(float duration) {
         yield return new WaitForSeconds(duration);

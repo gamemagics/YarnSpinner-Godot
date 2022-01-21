@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Localization : Node {
+public class Localization {
     class StringDictionary : Dictionary<string, string> { }
     class AssetDictionary : Dictionary<string, Node> { }
 

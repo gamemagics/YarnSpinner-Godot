@@ -11,6 +11,7 @@ public class YarnProject : Node {
 
     [Export] private string[] sourceScripts;
     [Export] private string declarationPath = null;
+    [Export] private LanguageToSourceAsset[] languages;
 
     public override void _Ready() {
         string content = "";
