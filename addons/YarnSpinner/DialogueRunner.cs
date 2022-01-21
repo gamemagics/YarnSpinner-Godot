@@ -221,6 +221,7 @@ public class DialogueRunner : Control {
             GD.PrintErr($"Cannot add a command handler for {commandName}: one already exists");
             return;
         }
+
         commandHandlers.Add(commandName, handler);
     }
 
@@ -560,15 +561,6 @@ public class DialogueRunner : Control {
         //
         // We can only do this if our onCommand event is not null and would
         // do something if we invoked it, so test this now.
-        //if (onCommand != null && onCommand.GetPersistentEventCount() > 0) {
-        //    // We can invoke the event!
-        //    onCommand.Invoke(command.Text);
-        //}
-        //else {
-        //    // We're out of ways to handle this command! Log this as an
-        //    // error.
-        //    GD.PrintErr($"No Command <<{command.Text}>> was found. Did you remember to use the YarnCommand attribute or AddCommandHandler() function in C#?");
-        //}
         EmitSignal("onCommand", command.Text);
 
         // Whether we successfully handled it via the Unity Event or not,
@@ -707,10 +699,12 @@ public class DialogueRunner : Control {
     }
     private static IEnumerator WaitForYieldInstruction(Delegate @theDelegate, object[] finalParametersToUse, Action onSuccessfulDispatch) {
         // Invoke the delegate.
-        var yieldInstruction = @theDelegate.DynamicInvoke(finalParametersToUse);
+        var yieldInstruction = @theDelegate.DynamicInvoke(finalParametersToUse) as IEnumerator;
 
-        // Yield on the return result.
-        yield return yieldInstruction;
+        if (yieldInstruction.MoveNext()) {
+            // Yield on the return result.
+            yield return yieldInstruction.Current;
+        }
 
         // Call the completion handler.
         onSuccessfulDispatch();
@@ -733,7 +727,6 @@ public class DialogueRunner : Control {
         if (onSuccessfulDispatch is null) {
             throw new ArgumentNullException(nameof(onSuccessfulDispatch));
         }
-
 
         CommandDispatchResult commandExecutionResult = ActionManager.TryExecuteCommand(SplitCommandText(command).ToArray(), out object returnValue);
         if (commandExecutionResult != CommandDispatchResult.Success) {

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections;
 
 public class RPGView : DialogueViewBase {
     [Export] private string textPath;
@@ -21,6 +22,14 @@ public class RPGView : DialogueViewBase {
         for (int i = 0; i < optionsPath.Length; ++i) {
             optionsButton[i] = GetNode<Button>(optionsPath[i]);
         }
+
+        var runner = GetParent<DialogueRunner>();
+        runner.AddCommandHandler<float>("wait", Wait);
+    }
+
+    public static IEnumerator Wait(float duration) {
+        GD.Print("wait...");
+        yield return new WaitForSeconds(duration);
     }
 
     public override void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {

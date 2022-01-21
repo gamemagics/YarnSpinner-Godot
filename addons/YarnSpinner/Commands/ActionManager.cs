@@ -166,30 +166,6 @@ internal static class ActionManager {
 
     private static Type GetFuncType(int paramCount) {
         // this causes me physical pain
-#if UNITY_2020_3_OR_NEWER
-            return paramCount switch
-            {
-                0 => typeof(Func<>),
-                1 => typeof(Func<,>),
-                2 => typeof(Func<,,>),
-                3 => typeof(Func<,,,>),
-                4 => typeof(Func<,,,,>),
-                5 => typeof(Func<,,,,,>),
-                6 => typeof(Func<,,,,,,>),
-                7 => typeof(Func<,,,,,,,>),
-                8 => typeof(Func<,,,,,,,,>),
-                9 => typeof(Func<,,,,,,,,,>),
-                10 => typeof(Func<,,,,,,,,,,>),
-                11 => typeof(Func<,,,,,,,,,,,>),
-                12 => typeof(Func<,,,,,,,,,,,,>),
-                13 => typeof(Func<,,,,,,,,,,,,,>),
-                14 => typeof(Func<,,,,,,,,,,,,,,>),
-                15 => typeof(Func<,,,,,,,,,,,,,,,>),
-                16 => typeof(Func<,,,,,,,,,,,,,,,,>),
-                _ =>  throw new ArgumentException("Delegates are limited to 16 parameters. Consider splitting up " +
-                    "the implementation into multiple parts.")
-            };
-#else
         switch (paramCount) {
             case 0: return typeof(Func<>);
             case 1: return typeof(Func<,>);
@@ -212,7 +188,6 @@ internal static class ActionManager {
                 throw new ArgumentException("Delegates are limited to 16 parameters. Consider splitting up " +
                     "the implementation into multiple parts.");
         }
-#endif
     }
 
     private static Delegate GetFunctionRunner(MethodInfo method) {
@@ -324,6 +299,7 @@ internal static class ActionManager {
     /// <param name="returnValue">The actual return value of the object.</param>
     /// <returns>Was a command executed?</returns>
     public static DialogueRunner.CommandDispatchResult TryExecuteCommand(string[] args, out object returnValue) {
+        GD.Print("www");
         if (!commands.TryGetValue(args[0], out var command)) {
             returnValue = null;
 

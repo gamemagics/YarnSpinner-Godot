@@ -5,6 +5,7 @@ using System.Collections;
 public class DefaultActions {
     [YarnCommand("wait")]
     public static IEnumerator Wait(float duration) {
+        GD.Print("wait...");
         yield return new WaitForSeconds(duration);
     }
 
