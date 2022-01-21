@@ -2,7 +2,13 @@ title: HelloWorld
 tags: 
 colorID: 0
 ---
-System: Hello World!
+System: Hello World! 
+<<wait 2>>
+<<if $rua is true>>
+System: rua!
+<<else>>
+System: ...
+<<endif>>
 -> I'm back.
     <<jump Old>>
 -> I'm new here.

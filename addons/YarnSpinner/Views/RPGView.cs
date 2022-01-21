@@ -24,13 +24,14 @@ public class RPGView : DialogueViewBase {
     }
 
     public override void RunLine(LocalizedLine dialogueLine, Action onDialogueLineFinished) {
-        base.RunLine(dialogueLine, onDialogueLineFinished);
         if (textLabel != null) {
             textLabel.Text = dialogueLine.TextWithoutCharacterName.Text;
         }
         if (speakerLabel != null) {
             speakerLabel.Text = dialogueLine.CharacterName;
         }
+
+        base.RunLine(dialogueLine, onDialogueLineFinished);
     }
 
     public override void RunOptions(DialogueOption[] dialogueOptions, Action<int> onOptionSelected) {

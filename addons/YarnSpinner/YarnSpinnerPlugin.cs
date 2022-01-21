@@ -12,6 +12,7 @@ public class YarnSpinnerPlugin : EditorPlugin {
         AddComponent("res://addons/YarnSpinner/LineProviders/TextLineProvider.cs", "TextLineProvider", "Node");
         AddComponent("res://addons/YarnSpinner/LanguageToSourceAsset.cs", "LanguageToSourceAsset", "Resource");
         AddComponent("res://addons/YarnSpinner/Views/RPGView.cs", "RPGView", "Control");
+        AddComponent("res://addons/YarnSpinner/Declaration.cs", "Declaration", "Resource");
     }
     public override void _ExitTree() {
         RemoveCustomType("DialogueRunner");

@@ -15,8 +15,8 @@ public class YarnProject : Resource {
 
     private string projectName = null;
     private string[] sourceScripts = null;
-    private string declarationPath = null;
     private LanguageToSourceAsset[] languages = null;
+    private Declaration[] declarations = null;
 
     private string defaultLanguage = null;
 
@@ -43,6 +43,15 @@ public class YarnProject : Resource {
     }
 
     [Export]
+    public string DefaultLanguage {
+        set {
+            defaultLanguage = value;
+            Compile();
+        }
+        get { return defaultLanguage; }
+    }
+
+    [Export]
     public LanguageToSourceAsset[] Languages {
         set {
             languages = value;
@@ -52,12 +61,12 @@ public class YarnProject : Resource {
     }
 
     [Export]
-    public string DefaultLanguage {
+    public Declaration[] Declarations {
         set {
-            defaultLanguage = value;
+            declarations = value;
             Compile();
         }
-        get { return defaultLanguage; }
+        get { return declarations; }
     }
 
     private static byte[] GetHash(string inputString) {
@@ -96,13 +105,27 @@ public class YarnProject : Resource {
         }
 
         var job = CompilationJob.CreateFromString(sourceScripts[0], content);
-        //if (declarationPath != null) {
-        //    var dnode = GetNode<IDeclaration>(declarationPath);
-        //    var ds = dnode.GetDeclarations();
-        //    if (ds.Count > 0) {
-        //        job.VariableDeclarations = dnode.GetDeclarations();
-        //    }
-        //}
+        if (declarations != null && declarations.Length > 0) {
+            var finalDec = new List<Yarn.Compiler.Declaration>();
+            Yarn.Compiler.Declaration v = new Yarn.Compiler.Declaration();
+            foreach (var dec in declarations) {
+                switch (dec.Type) {
+                    case DeclaerationType.STRING:
+                        v = Yarn.Compiler.Declaration.CreateVariable(dec.Name, Yarn.BuiltinTypes.String, dec.DefaultValue);
+                        break;
+                    case DeclaerationType.BOOLEAN:
+                        v = Yarn.Compiler.Declaration.CreateVariable(dec.Name, Yarn.BuiltinTypes.Boolean, bool.Parse(dec.DefaultValue));
+                        break;
+                    case DeclaerationType.NUMBER:
+                        v = Yarn.Compiler.Declaration.CreateVariable(dec.Name, Yarn.BuiltinTypes.Number, float.Parse(dec.DefaultValue));
+                        break;
+                }
+
+                finalDec.Add(v);
+            }
+
+            job.VariableDeclarations = finalDec;
+        }
 
         CompilationResult compilationResult = Compiler.Compile(job);
         var errors = compilationResult.Diagnostics.Where(d => d.Severity == Diagnostic.DiagnosticSeverity.Error);

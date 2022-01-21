@@ -1,9 +1,16 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://addons/YarnSpinner/Views/RPGView.cs" type="Script" id=1]
 [ext_resource path="res://addons/YarnSpinner/DialogueRunner.cs" type="Script" id=2]
 [ext_resource path="res://addons/YarnSpinner/YarnProject.cs" type="Script" id=3]
 [ext_resource path="res://addons/YarnSpinner/LanguageToSourceAsset.cs" type="Script" id=4]
+[ext_resource path="res://addons/YarnSpinner/Declaration.cs" type="Script" id=5]
+
+[sub_resource type="Resource" id=3]
+script = ExtResource( 5 )
+Name = "$rua"
+Type = 1
+DefaultValue = "true"
 
 [sub_resource type="Resource" id=2]
 script = ExtResource( 4 )
@@ -13,8 +20,9 @@ LanguageID = "English"
 script = ExtResource( 3 )
 ProjectName = "Test.yarnproject"
 SourceScripts = PoolStringArray( "res://Dialogues/Test.yarn.tres" )
-Languages = [ SubResource( 2 ) ]
 DefaultLanguage = "English"
+Languages = [ SubResource( 2 ) ]
+Declarations = [ SubResource( 3 ) ]
 
 [node name="Test" type="Node2D"]
 
