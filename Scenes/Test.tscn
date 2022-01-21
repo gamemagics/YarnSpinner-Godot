@@ -28,6 +28,7 @@ __meta__ = {
 yarnProject = SubResource( 1 )
 viewNames = PoolStringArray( "RPGView" )
 startNode = "HelloWorld"
+automaticallyContinueLines = true
 
 [node name="RPGView" type="Control" parent="DialogueRunner"]
 margin_right = 1024.0
@@ -37,12 +38,52 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 textPath = "RichTextLabel"
+speakerPath = "Speaker"
+optionsPath = PoolStringArray( "Option1", "Option2" )
+
+[node name="ColorRect" type="ColorRect" parent="DialogueRunner/RPGView"]
+margin_left = 202.0
+margin_top = 369.0
+margin_right = 799.0
+margin_bottom = 598.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="RichTextLabel" type="RichTextLabel" parent="DialogueRunner/RPGView"]
-margin_left = 259.0
-margin_top = 411.0
-margin_right = 758.0
+margin_left = 205.0
+margin_top = 370.0
+margin_right = 798.0
 margin_bottom = 601.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Speaker" type="RichTextLabel" parent="DialogueRunner/RPGView"]
+margin_left = 204.0
+margin_top = 345.0
+margin_right = 332.0
+margin_bottom = 368.0
+
+[node name="Option1" type="Button" parent="DialogueRunner/RPGView"]
+visible = false
+margin_left = 677.0
+margin_top = 326.0
+margin_right = 795.0
+margin_bottom = 367.0
+text = "Option1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Option2" type="Button" parent="DialogueRunner/RPGView"]
+visible = false
+margin_left = 677.0
+margin_top = 277.0
+margin_right = 795.0
+margin_bottom = 318.0
+text = "Option2"
 __meta__ = {
 "_edit_use_anchors_": false
 }
