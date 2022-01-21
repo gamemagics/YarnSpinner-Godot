@@ -7,7 +7,7 @@ using System;
 public class YarnSpinnerPlugin : EditorPlugin {
     public override void _EnterTree() {
         AddComponent("res://addons/YarnSpinner/DialogueRunner.cs", "DialogueRunner", "Control");
-        AddComponent("res://addons/YarnSpinner/YarnProject.cs", "YarnProject", "Node");
+        AddComponent("res://addons/YarnSpinner/YarnProject.cs", "YarnProject", "Resource");
         AddComponent("res://addons/YarnSpinner/Commands/DefaultActions.cs", "DefaultActions", "Node");
         AddComponent("res://addons/YarnSpinner/LineProviders/TextLineProvider.cs", "TextLineProvider", "Node");
         AddComponent("res://addons/YarnSpinner/LanguageToSourceAsset.cs", "LanguageToSourceAsset", "Resource");

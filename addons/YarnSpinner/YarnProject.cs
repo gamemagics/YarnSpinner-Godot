@@ -2,33 +2,66 @@ using Godot;
 using System.Collections.Generic;
 using Yarn.Compiler;
 using System.Linq;
+using System.IO;
 
-public class YarnProject : Node {
-    public Yarn.Program program;
+[Tool]
+public class YarnProject : Resource {
+    public byte[] compiledYarnProgram;
     public Localization baseLocalization;
     public List<string> searchAssembliesForActions = new List<string>();
     public List<Localization> localizations = new List<Localization>();
 
-    [Export] private string[] sourceScripts;
-    [Export] private string declarationPath = null;
-    [Export] private LanguageToSourceAsset[] languages;
+    private string projectName = null;
+    private string[] sourceScripts;
+    private string declarationPath = null;
+    private LanguageToSourceAsset[] languages;
 
-    public override void _Ready() {
+    [Export]
+    public string ProjectName {
+        set {
+            string temp = projectName;
+            projectName = value;
+#if TOOLS
+            Compile();
+            Save(temp);
+#endif
+        }
+        get { return projectName; }
+    }
+
+    [Export]
+    public string[] SourceScripts {
+        set {
+            sourceScripts = value;
+#if TOOLS
+            Compile();
+            Save();
+#endif
+        }
+        get { return sourceScripts; }
+    }
+
+#if TOOLS
+    private void Compile() {
+        if (sourceScripts == null || sourceScripts.Length == 0) {
+            return;
+        }
+
         string content = "";
         foreach (var s in sourceScripts) {
-            var fp = new File();
-            fp.Open(s, File.ModeFlags.Read);
+            var fp = new Godot.File();
+            fp.Open(s, Godot.File.ModeFlags.Read);
             content += fp.GetAsText();
         }
 
         var job = CompilationJob.CreateFromString(sourceScripts[0], content);
-        if (declarationPath != null) {
-            var dnode = GetNode<IDeclaration>(declarationPath);
-            var ds = dnode.GetDeclarations();
-            if (ds.Count > 0) {
-                job.VariableDeclarations = dnode.GetDeclarations();
-            }
-        }
+        //if (declarationPath != null) {
+        //    var dnode = GetNode<IDeclaration>(declarationPath);
+        //    var ds = dnode.GetDeclarations();
+        //    if (ds.Count > 0) {
+        //        job.VariableDeclarations = dnode.GetDeclarations();
+        //    }
+        //}
 
         CompilationResult compilationResult = Compiler.Compile(job);
         var errors = compilationResult.Diagnostics.Where(d => d.Severity == Diagnostic.DiagnosticSeverity.Error);
@@ -45,8 +78,34 @@ public class YarnProject : Node {
             return;
         }
 
-        program = compilationResult.Program;
+        using (var memoryStream = new MemoryStream())
+        using (var outputStream = new Google.Protobuf.CodedOutputStream(memoryStream)) {
+            // Serialize the compiled program to memory
+            compilationResult.Program.WriteTo(outputStream);
+            outputStream.Flush();
+
+            compiledYarnProgram = memoryStream.ToArray();
+        }
     }
+
+    private void Save(string prevName = null) {
+        GD.Print("Save to " + projectName);
+
+        ResourceSaver.Save("res://Dialogues/" + projectName, this);
+        ResourcePath = "res://Dialogues/" + projectName;
+
+        if (prevName != null) {
+            GD.Print("Remove " + prevName);
+            var fp = new Godot.File();
+            var err = fp.Open("res://Dialogues/" + prevName, Godot.File.ModeFlags.Read);
+            if (err == Error.Ok) {
+                string path = fp.GetPathAbsolute();
+                fp.Close();
+                System.IO.File.Delete(path);
+            }
+        }
+    }
+#endif
 
     public Localization GetLocalization(string localeCode) {
 
@@ -71,6 +130,6 @@ public class YarnProject : Node {
     /// this object.
     /// </summary>
     public Yarn.Program GetProgram() {
-        return program;
+        return Yarn.Program.Parser.ParseFrom(compiledYarnProgram);
     }
 }

@@ -1,15 +1,8 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://addons/YarnSpinner/Views/RPGView.cs" type="Script" id=1]
 [ext_resource path="res://addons/YarnSpinner/DialogueRunner.cs" type="Script" id=2]
-[ext_resource path="res://addons/YarnSpinner/YarnProject.cs" type="Script" id=3]
-[ext_resource path="res://Scripts/TestDeclaration.cs" type="Script" id=4]
-[ext_resource path="res://addons/YarnSpinner/LanguageToSourceAsset.cs" type="Script" id=5]
-
-[sub_resource type="Resource" id=1]
-script = ExtResource( 5 )
-LanguageID = null
-StringFile = null
+[ext_resource path="res://Dialogues/Test.yarnproject.res" type="Resource" id=3]
 
 [node name="Test" type="Node2D"]
 
@@ -20,6 +13,7 @@ script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+yarnProject = ExtResource( 3 )
 viewNames = PoolStringArray( "RPGView" )
 startNode = "HelloWorld"
 
@@ -40,12 +34,3 @@ margin_bottom = 601.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="YarnProject" type="Node" parent="DialogueRunner"]
-script = ExtResource( 3 )
-sourceScripts = PoolStringArray( "res://Dialogue/Test.tres" )
-declarationPath = "Declaration"
-languages = [ SubResource( 1 ) ]
-
-[node name="Declaration" type="Node" parent="DialogueRunner/YarnProject"]
-script = ExtResource( 4 )
